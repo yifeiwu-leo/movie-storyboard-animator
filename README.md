@@ -42,6 +42,23 @@ Verify it is available on your `PATH`:
 ffmpeg -version
 ```
 
+Install Node.js, which provides the `node` and `npm` commands used by the pipeline:
+
+```bash
+# macOS
+brew install node
+
+# Ubuntu/Debian
+sudo apt-get update && sudo apt-get install nodejs npm
+```
+
+Verify Node.js and npm are available on your `PATH`:
+
+```bash
+node --version
+npm --version
+```
+
 Install dependencies once:
 
 ```bash
@@ -94,4 +111,5 @@ The pipeline writes `manifest.json` in that output folder. It tracks every refer
 
 1. Support error handling from failed generations
 2. Support uploaded references
+3. Soundtracking
 
