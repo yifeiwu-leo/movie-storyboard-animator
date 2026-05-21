@@ -1,0 +1,32 @@
+{
+  "apiKeyEnv": "LEONARDO_API_KEY",
+  "baseUrl": "https://cloud.leonardo.ai/api/rest/",
+  "models": {
+    "image": "gemini-2.5-flash-image",
+    "video": "kling-3.0"
+  },
+  "styleIds": ["111dc692-d470-4eec-b791-3475abac4c46"],
+  "image": {
+    "width": 1344,
+    "height": 768,
+    "quantity": 1,
+    "promptEnhance": "OFF",
+    "timeoutSeconds": 180,
+    "pollIntervalSeconds": 5,
+    "concurrency": 4,
+    "referenceStrength": "MID"
+  },
+  "video": {
+    "width": 1280,
+    "height": 720,
+    "quantity": 1,
+    "mode": "RESOLUTION_720",
+    "audio": true,
+    "promptEnhance": "OFF",
+    "timeoutSeconds": 900,
+    "pollIntervalSeconds": 10,
+    "concurrency": 3,
+    "maxDurationSeconds": 15
+  },
+  "outputDir": "outputs/pipeline"
+}

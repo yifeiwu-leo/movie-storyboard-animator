@@ -1,0 +1,22 @@
+{
+  "name": "movie-storyboard-animator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dry-run": "npm run build -- --pretty false && node dist/dry-run.js",
+    "pipeline": "npm run build -- --pretty false && node dist/run-pipeline.js",
+    "generate:keyframes": "npm run build -- --pretty false && node dist/generate-keyframes.js",
+    "generate:clips": "npm run build -- --pretty false && node dist/generate-clips.js",
+    "assemble": "npm run build -- --pretty false && node dist/assemble-video.js",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  }
+}
