@@ -26,6 +26,22 @@ Edit `config/pipeline.json` if you need to change the base URL, models, timeouts
 - Video timeout: 15 minutes
 - Max Kling shot duration: 15 seconds
 
+Install ffmpeg, which is required for the final video assembly step:
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt-get update && sudo apt-get install ffmpeg
+```
+
+Verify it is available on your `PATH`:
+
+```bash
+ffmpeg -version
+```
+
 Install dependencies once:
 
 ```bash
