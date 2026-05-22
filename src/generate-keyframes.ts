@@ -140,15 +140,7 @@ async function loadExistingManifest(): Promise<KeyframeManifest> {
 
   return {
     createdAt: new Date().toISOString(),
-    characterReferences: [
-      {
-        referenceId: "primary_character_reference",
-        generationId: "1f154b64-8d9a-6440-9b5c-da1b854d843c",
-        imageId: "2a9ae53b-0dd2-458a-826a-fbb86d4ff7d7",
-        imageUrl:
-          "https://cdn.dev.leonardo.ai/users/c90a3b35-f589-4e74-bc08-f46b0794221f/generations/1f154b64-8d9a-6440-9b5c-da1b854d843c/gemini-2.5-flash-image_fictionalized_Chinese_male_character_adult_version_same_recognizable_person_acro-0.jpg",
-      },
-    ],
+    characterReferences: [],
     keyframes: [],
   };
 }

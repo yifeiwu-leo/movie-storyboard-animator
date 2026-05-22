@@ -15,10 +15,11 @@ Break the user's concept into cinematic shots. Each shot must be independently a
 
 The pipeline will:
 
-1. Generate optional character/reference images.
-2. Generate each shot's start and end keyframes.
-3. Use those generated keyframe image IDs as Kling start/end frames.
-4. Assemble all downloaded clips in shot order.
+1. Generate optional global reference images, such as characters, props, or style anchors.
+2. Generate optional shot-scoped background scene reference images.
+3. Generate each shot's start and end keyframes using global references plus the shot's listed `referenceIds`.
+4. Use those generated keyframe image IDs as Kling start/end frames.
+5. Assemble all downloaded clips in shot order.
 
 Do not include markdown. Return only valid JSON matching the schema below.
 
@@ -27,6 +28,9 @@ Do not include markdown. Return only valid JSON matching the schema below.
 - Define the main subject, characters, setting, mood, visual style, and intended runtime.
 - Keep character, object, location, and style continuity consistent across all shots.
 - Use recurring visual motifs where useful.
+- Create reusable `references` for important characters, props, and background scenes before the shots.
+- Mark character/prop/style references as `"scope": "global"` when they should guide every keyframe.
+- Mark background scene references as `"scope": "shot"` and list them in each shot's `referenceIds` when that shot should use that environment.
 - Make each keyframe prompt visually complete and specific.
 - Make each video prompt describe motion, camera movement, and continuity.
 - Keep shared context compact. The pipeline appends `style`, `character.description`, and all `continuityRules` to every reference, keyframe, and video prompt.
@@ -46,6 +50,8 @@ Use `references`, `startKeyframePrompt`, and `endKeyframePrompt` as image-genera
 - Be concrete about lighting, camera angle, framing, lens feel, focus, color grade, material texture, and important props.
 - Use positive framing: describe what should appear, rather than listing what should not appear.
 - If text must appear in the image, quote the exact text and describe the typography, for example `"Script to Movie" in bold readable sans-serif letters`.
+- For background scene references, generate clean establishing images of the environment without the main action. Include stable layout, lighting, major props, and camera perspective.
+- For start/end keyframes, mention which referenced background scene they should follow by name in natural language, and include the matching reference id in `referenceIds`.
 - For keyframe pairs, make the end keyframe a natural visual continuation of the start keyframe, while still describing it as a complete standalone image.
 - Keep image prompts concise enough that the appended shared context stays under the final prompt length limit.
 
@@ -78,7 +84,13 @@ Use `videoPrompt` as the motion direction between the generated start and end fr
   "references": [
     {
       "id": "primary_character_reference",
+      "scope": "global",
       "prompt": "reference image prompt"
+    },
+    {
+      "id": "studio_background_reference",
+      "scope": "shot",
+      "prompt": "background scene reference prompt"
     }
   ],
   "shots": [
@@ -88,6 +100,7 @@ Use `videoPrompt` as the motion direction between the generated start and end fr
       "durationSeconds": 5,
       "caption": "short on-screen caption",
       "narration": "optional narration line",
+      "referenceIds": ["studio_background_reference"],
       "startKeyframePrompt": "complete prompt for the shot's starting image",
       "endKeyframePrompt": "complete prompt for the shot's ending image",
       "videoPrompt": "motion prompt for tweening between the start and end frames"
@@ -99,8 +112,11 @@ Use `videoPrompt` as the motion direction between the generated start and end fr
 ## Validation Rules
 
 - `durationSeconds` must be between 1 and 15.
-- `id` fields must be unique and filesystem-safe: lowercase letters, numbers, and underscores only.
+- `id` fields for shots and references must be unique and filesystem-safe: lowercase letters, numbers, and underscores only.
 - `outputName` must be filesystem-safe: lowercase letters, numbers, and hyphens only.
+- Reference `scope` must be `"global"` or `"shot"` when present. Omit it only for older global references.
+- Every `referenceIds` entry on a shot must match an existing reference `id`.
+- Use `referenceIds` for shot-scoped background scene references. Do not attach every background reference to every shot.
 - Each final composed generation prompt must be under 1500 characters after appending `style`, `character.description`, and `continuityRules`.
 - Keep `style`, `character.description`, and `continuityRules` concise. Do not repeat the full character or location description in every shot prompt.
 - Prompts must not rely on the pipeline or user to infer missing visual details.

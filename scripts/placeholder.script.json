@@ -3,9 +3,9 @@
     "outputName": "movie-storyboard-animator",
     "style": "Realistic cinematic night studio, warm desk lamps, cool monitor glow, shallow depth of field, subtle film grain. Physical props and clear actions only.",
     "character": {
-    "description": "Character A: indie director, early 30s, medium build, tousled dark hair, light stubble, round glasses, black t-shirt, olive overshirt, blank lanyard. Character B: identical clones. Props: typewriter, LEONARDOAI box, paper cards, monitors, corkboard.",
+    "description": "Character A: human indie director, early 30s, tousled dark hair, stubble, round glasses, black t-shirt, olive overshirt, blank lanyard. Character B: robotic director-clones with metal joints, LED eyes, same glasses and outfit silhouette. Props: typewriter, LEONARDOAI box, paper cards, monitors, corkboard.",
     "continuityRules": [
-    "Keep faces, hair, glasses, outfits, and lanyards consistent.",
+    "Keep Character A human and Character B visibly robotic.",
     "Use the same studio and physical paper props.",
     "Readable text only: LEONARDOAI, shot 01, start, end, motion, Script to Movie."
     ]
@@ -13,11 +13,33 @@
     "references": [
     {
     "id": "primary_director_reference",
+    "scope": "global",
     "prompt": "Generate a realistic character reference portrait. Subject: Character A, an indie movie director in his early 30s with medium build, tousled dark hair, light stubble, round glasses, black t-shirt, olive overshirt, and a blank lanyard. Action: he faces camera with a focused, calm expression. Location/context: neutral studio portrait background. Composition: centered chest-up portrait, shallow depth of field. Style: realistic cinematic lighting, soft key light, natural skin texture, no logos."
     },
     {
-    "id": "studio_reference",
-    "prompt": "Generate a realistic environment reference image. Subject: a small indie film studio at night. Action: the room is ready for work, with no people present. Location/context: central desk with typewriter, laptop, two monitors, corkboard, paper cards, sticky notes, clapboard, coffee mug, warm desk lamp, and blue monitor light. Composition: wide establishing shot from eye level, all major props visible. Style: cinematic color grading, warm amber practical light mixed with cool blue monitor glow, subtle film grain, no brand logos."
+    "id": "robotic_clone_reference",
+    "scope": "global",
+    "prompt": "Generate a realistic character reference portrait. Subject: Character B, a robotic director-clone with metal joints, soft LED eyes, round glasses, black t-shirt shape, olive overshirt silhouette, and blank lanyard. Action: the robot faces camera calmly. Location/context: neutral studio portrait background. Composition: centered chest-up portrait, shallow depth of field. Style: cinematic soft key light, brushed metal texture, no logos."
+    },
+    {
+    "id": "studio_desk_background",
+    "scope": "shot",
+    "prompt": "Generate a realistic background reference image. Subject: the main studio desk at night. Action: empty room ready for work, no characters. Location/context: typewriter, coffee mug, warm desk lamp, long paper path area, corkboard, laptop, two monitors. Composition: medium-wide eye-level view facing the desk. Style: warm amber desk light, cool blue monitor glow, subtle film grain."
+    },
+    {
+    "id": "workstations_background",
+    "scope": "shot",
+    "prompt": "Generate a realistic background reference image. Subject: five separate storyboard workstations in the same night studio. Action: empty desks ready for drawing, no characters. Location/context: paper sheets, pencils, notecards, desk lamps, corkboard, monitors. Composition: wide eye-level view showing all workstations. Style: warm desk lights, cool blue monitor glow, cinematic realism."
+    },
+    {
+    "id": "assembly_background",
+    "scope": "shot",
+    "prompt": "Generate a realistic background reference image. Subject: the main studio desk set up for movie assembly. Action: empty workspace ready for final assembly, no characters. Location/context: small practical assembly machine, ordered clip cards, film strip tray, corkboard, monitors, desk lamp. Composition: medium-wide eye-level view. Style: warm desk light, cool monitor glow, crisp metal and paper textures."
+    },
+    {
+    "id": "celebration_background",
+    "scope": "shot",
+    "prompt": "Generate a realistic background reference image. Subject: the same studio arranged as a small screening area. Action: empty celebration setup, no characters. Location/context: small screen, chairs, warm practical lights, simple poster with exact text \"Script to Movie\" in bold readable sans-serif letters. Composition: wide eye-level view showing screen and poster. Style: warm celebratory light, subtle film grain."
     }
     ],
     "shots": [
@@ -27,6 +49,7 @@
     "durationSeconds": 8,
     "caption": "First, write the whole movie.",
     "narration": "The director begins by typing a very long script with every scene written out.",
+    "referenceIds": ["studio_desk_background"],
     "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A, the indie director, sits at the studio desk facing a typewriter. Action: he rests his hands near the keys, ready to type. Location/context: night studio desk with a blank page loaded in the typewriter, coffee mug, and warm desk lamp. Composition: medium eye-level shot, typewriter and director's hands clearly visible. Style: cinematic warm desk light, cool blue background monitor glow, shallow depth of field.",
     "endKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the typewriter. Action: a very long paper script pours out of the typewriter, crosses the desk, and spills onto the floor while Character A looks satisfied. Location/context: same night studio desk with coffee mug and lamp. Composition: medium eye-level shot from the same angle as the start frame, long paper path clearly visible. Style: cinematic warm desk light, cool blue background monitor glow, shallow depth of field.",
     "videoPrompt": "Start in a medium shot of Character A at the typewriter. The camera slowly pushes in while his fingers type. The typewriter advances and the paper script grows longer across the desk. By the end, the script spills onto the floor and Character A pauses with a satisfied look."
@@ -37,6 +60,7 @@
     "durationSeconds": 8,
     "caption": "Script in. Notecards out.",
     "narration": "Next, he feeds the long script into a magic box labeled LEONARDOAI, and it prints a stack of shot notecards.",
+    "referenceIds": ["studio_desk_background"],
     "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A holds the long typed script in both hands beside a small glowing magic box. Action: he is about to feed the script into the box. Location/context: studio desk at night. The box has one large readable label with exact text \"LEONARDOAI\" in bold black sans-serif letters. Composition: medium close shot, director's hands, script, and box label all clear. Style: cinematic practical light, warm glow from the box, shallow depth of field.",
     "endKeyframePrompt": "Generate a realistic keyframe image. Subject: the glowing box labeled \"LEONARDOAI\" and a pile of printed notecards. Action: the long script feeds into one side of the box while paper notecards come out the other side. Location/context: same studio desk. Render readable text on the top cards: \"shot 01\", \"shot 02\", \"shot 03\" in simple black marker. Composition: close shot focused on the box output slot and neat notecard pile. Style: realistic cinematic desk lighting, warm box glow, crisp paper texture.",
     "videoPrompt": "Start with Character A guiding the long script into the LEONARDOAI box. Keep the camera close to the box and the director's hands. The box glows brighter as the paper moves through it. Then notecards print out one by one and slide onto the desk in a growing pile."
@@ -46,50 +70,55 @@
     "title": "Notecards To Storyboards",
     "durationSeconds": 9,
     "caption": "Notecards become storyboards.",
-    "narration": "The clones read the printed notecards and draw simple storyboards for each shot.",
-    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A stands at the main studio desk with several Character B clones nearby. Action: Character A holds out printed notecards as assignments. Location/context: night studio with the glowing box labeled \"LEONARDOAI\" and a pile of notecards on the desk. Composition: wide eye-level shot showing the director, clones, box, and desk clearly. Style: cinematic warm and cool mixed lighting, shallow depth of field, physical paper props.",
-    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: five Character B clones work at five separate desks while Character A watches from the center. Action: each clone draws storyboard panels on paper based on a printed notecard. Location/context: same night studio, desks arranged around the room. Include simple hand-drawn storyboard boxes on each sheet. Composition: wide shot with all five workstations visible. Style: realistic cinematic lighting, warm desk lamps, blue monitor glow, paper and pencil texture.",
-    "videoPrompt": "Start in a wide shot as Character A hands printed notecards to the Character B clones. The camera pans with the clones as they move to separate desks. Each clone reads a notecard, picks up a pencil, and draws simple storyboard panels on paper. End with all five clones drawing at the same time."
+    "narration": "The robotic clones read the printed notecards and draw simple storyboards for each shot.",
+    "referenceIds": ["workstations_background"],
+    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A stands at the main studio desk with several Character B robotic clones nearby. Action: Character A holds out printed notecards as assignments. Location/context: night studio with the glowing box labeled \"LEONARDOAI\" and a pile of notecards on the desk. Composition: wide eye-level shot showing the human director, robotic clones, box, and desk clearly. Style: cinematic warm and cool mixed lighting, shallow depth of field, physical paper props.",
+    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: five Character B robotic clones work at five separate desks while Character A watches from the center. Action: each robot clone draws storyboard panels on paper based on a printed notecard. Location/context: same night studio, desks arranged around the room. Include simple hand-drawn storyboard boxes on each sheet. Composition: wide shot with all five workstations visible. Style: realistic cinematic lighting, warm desk lamps, blue monitor glow, paper and pencil texture.",
+    "videoPrompt": "Start in a wide shot as Character A hands printed notecards to the Character B robotic clones. The camera pans with the robots as they move to separate desks. Each robot clone reads a notecard, picks up a pencil, and draws simple storyboard panels on paper. End with all five robotic clones drawing at the same time."
     },
     {
     "id": "create_keyframes",
     "title": "Create Keyframes",
     "durationSeconds": 8,
     "caption": "Every shot gets a beginning and ending.",
-    "narration": "The clones use the storyboard drawings to build a matching start frame, end frame, and motion cue.",
-    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: one Character B clone sits at a desk studying a printed notecard and a finished storyboard drawing. Action: the clone prepares to create keyframe cards. Location/context: night studio workstation with pencil, paper, and two blank cards. Render exact readable labels \"start\" and \"end\" on the two blank cards in simple black marker. Composition: medium close shot over the desk, clone face and paper layout visible. Style: cinematic warm desk light, shallow depth of field, crisp paper texture.",
+    "narration": "The robotic clones use the storyboard drawings to build a matching start frame, end frame, and motion cue.",
+    "referenceIds": ["workstations_background"],
+    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: one Character B robotic clone sits at a desk studying a printed notecard and a finished storyboard drawing. Action: the robot clone prepares to create keyframe cards. Location/context: night studio workstation with pencil, paper, and two blank cards. Render exact readable labels \"start\" and \"end\" on the two blank cards in simple black marker. Composition: medium close shot over the desk, robot face and paper layout visible. Style: cinematic warm desk light, shallow depth of field, crisp paper texture.",
     "endKeyframePrompt": "Generate a realistic keyframe image. Subject: the completed desk layout for one shot. Action: the storyboard drawing has been turned into a completed start frame card and a completed end frame card. Location/context: same desk workstation. Render exact readable labels \"start\", \"end\", and \"motion\"; place the \"motion\" arrow card between start and end. Composition: close overhead shot so the storyboard, start card, end card, and arrow card are all easy to read. Style: realistic paper texture, warm desk lighting, clean composition.",
-    "videoPrompt": "Start over the shoulder of one Character B clone studying the storyboard drawing. The camera holds steady as the clone draws the start frame card first, then draws the end frame card. The clone places the two cards side by side and adds the motion arrow between them."
+    "videoPrompt": "Start over the shoulder of one Character B robotic clone studying the storyboard drawing. The camera holds steady as the robot draws the start frame card first, then draws the end frame card. The robot places the two cards side by side and adds the motion arrow between them."
     },
     {
     "id": "completed_clips_return",
     "title": "Completed Clips Return",
     "durationSeconds": 8,
     "caption": "Completed clips return.",
-    "narration": "The clones come back with completed clips for every storyboard shot.",
-    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A waits at the main studio desk while Character B clones return from their workstations. Action: the clones carry completed clip cards, storyboard sheets, and start/end frame cards. Location/context: same night studio with corkboard, monitors, and desk lamp visible. Composition: wide eye-level shot with the main desk centered and clones entering from different sides. Style: cinematic warm and cool mixed lighting, shallow depth of field, physical paper props.",
+    "narration": "The robotic clones come back with completed clips for every storyboard shot.",
+    "referenceIds": ["assembly_background"],
+    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A waits at the main studio desk while Character B robotic clones return from their workstations. Action: the robot clones carry completed clip cards, storyboard sheets, and start/end frame cards. Location/context: same night studio with corkboard, monitors, and desk lamp visible. Composition: wide eye-level shot with the main desk centered and robotic clones entering from different sides. Style: cinematic warm and cool mixed lighting, shallow depth of field, physical paper props.",
     "endKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A checks a clean row of completed clip cards on the main desk. Action: he points at the ordered sequence. Location/context: night studio main desk. Render readable labels on the cards from \"shot 01\" through \"shot 10\" in simple black marker. Composition: overhead shot with the full row of cards visible and Character A's hand pointing into frame. Style: realistic paper texture, warm desk light, crisp readable text.",
-    "videoPrompt": "Start with Character A at the main desk as the Character B clones return from different directions. The camera tracks backward to reveal the group. One by one, the clones place completed clip cards on the desk in order from shot 01 to shot 10. Character A checks the row and nods."
+    "videoPrompt": "Start with Character A at the main desk as the Character B robotic clones return from different directions. The camera tracks backward to reveal the group. One by one, the robots place completed clip cards on the desk in order from shot 01 to shot 10. Character A checks the row and nods."
     },
     {
     "id": "assemble_final_movie",
     "title": "Assemble Final Movie",
     "durationSeconds": 9,
     "caption": "Assemble one final movie.",
-    "narration": "Together, the director and clones combine every clip into one final output.",
-    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the Character B clones gather around a small practical movie assembly machine on the desk. Action: they prepare to feed the ordered clip cards into the machine. Location/context: night studio main desk with the clip cards in a neat row. Composition: medium wide eye-level shot, team faces and machine visible. Style: cinematic warm desk light, blue monitor glow, realistic metal and paper textures.",
-    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: a continuous finished film strip emerges from the small movie assembly machine. Action: Character A and the Character B clones lean in and smile at the result. Location/context: same night studio desk. Composition: close shot focused on the film strip leaving the machine, with happy team faces softly visible behind it. Style: cinematic shallow depth of field, warm practical light, crisp film strip texture.",
-    "videoPrompt": "Start with the team around the small assembly machine. Character A points to the ordered clip cards while one clone feeds the first card into the machine. Other clones help guide the cards. The machine rollers turn, and one continuous film strip emerges. End on the finished film strip on the desk."
+    "narration": "Together, the director and robotic clones combine every clip into one final output.",
+    "referenceIds": ["assembly_background"],
+    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the Character B robotic clones gather around a small practical movie assembly machine on the desk. Action: they prepare to feed the ordered clip cards into the machine. Location/context: night studio main desk with the clip cards in a neat row. Composition: medium wide eye-level shot, human director, robot faces, and machine visible. Style: cinematic warm desk light, blue monitor glow, realistic metal and paper textures.",
+    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: a continuous finished film strip emerges from the small movie assembly machine. Action: Character A and the Character B robotic clones lean in and smile at the result. Location/context: same night studio desk. Composition: close shot focused on the film strip leaving the machine, with happy human and robot team faces softly visible behind it. Style: cinematic shallow depth of field, warm practical light, crisp film strip texture.",
+    "videoPrompt": "Start with the team around the small assembly machine. Character A points to the ordered clip cards while one robotic clone feeds the first card into the machine. Other robotic clones help guide the cards. The machine rollers turn, and one continuous film strip emerges. End on the finished film strip on the desk."
     },
     {
     "id": "premiere_night",
     "title": "Premiere Night",
     "durationSeconds": 8,
-    "caption": "Premiere night.",
-    "narration": "At the end, the director congratulates the team that helped bring the movie together.",
-    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the Character B clones stand together in the studio celebration area. Action: they watch the finished movie on a small screen. Location/context: same studio at night, now tidied for a small team celebration. Render a simple poster with exact text \"Script to Movie\" in bold readable sans-serif letters. Composition: wide eye-level shot showing the screen, poster, director, and clone team. Style: warm celebratory practical lighting, subtle film grain.",
-    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A congratulates the Character B clone team. Action: he shakes hands with one clone while the other clones clap and smile around him. Location/context: studio celebration area with the small screen and \"Script to Movie\" poster in the background. Composition: hero medium-wide shot centered on the handshake, smiling team surrounding them. Style: realistic cinematic lighting, warm celebratory color grade, shallow depth of field.",
-    "videoPrompt": "Start with the finished movie playing on the small screen. The camera slowly pushes toward Character A and the Character B clones. Character A turns from the screen to the team, shakes one clone's hand, pats another clone on the shoulder, and claps for everyone. End with the whole team smiling together."
+    "caption": "They watch it together.",
+    "narration": "At the end, the director and robotic clones watch the finished movie and clap together.",
+    "referenceIds": ["celebration_background"],
+    "startKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the Character B robotic clones stand together in the studio celebration area. Action: they watch the finished movie on a small screen. Location/context: same studio at night, now tidied for a small team celebration. Render a simple poster with exact text \"Script to Movie\" in bold readable sans-serif letters. Composition: wide eye-level shot showing the screen, poster, human director, and robot clone team. Style: warm celebratory practical lighting, subtle film grain.",
+    "endKeyframePrompt": "Generate a realistic keyframe image. Subject: Character A and the Character B robotic clones watch the finished movie together. Action: all of them clap while facing the small screen, smiling proudly. Location/context: studio celebration area with the small screen and \"Script to Movie\" poster in the background. Composition: medium-wide shot from behind and slightly to the side, showing the clapping human-and-robot team and the screen. Style: realistic cinematic lighting, warm celebratory color grade, shallow depth of field.",
+    "videoPrompt": "Start with the finished movie playing on the small screen. The camera slowly pushes in from behind the group. Character A and the Character B robotic clones face the screen, smile, and begin clapping together. End with everyone still watching the movie and applauding."
     }
     ]
     }

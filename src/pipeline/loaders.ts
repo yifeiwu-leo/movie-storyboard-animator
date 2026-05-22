@@ -65,6 +65,20 @@ function validateScript(script: StoryScript, config: PipelineConfig, path: strin
   }
 
   const ids = new Set<string>();
+  const referenceIds = new Set<string>();
+  for (const reference of script.references ?? []) {
+    if (!/^[a-z0-9_]+$/.test(reference.id)) {
+      throw new Error(`Invalid reference id "${reference.id}". Use lowercase letters, numbers, and underscores.`);
+    }
+    if (referenceIds.has(reference.id)) {
+      throw new Error(`Duplicate reference id "${reference.id}".`);
+    }
+    if (reference.scope && reference.scope !== "global" && reference.scope !== "shot") {
+      throw new Error(`Invalid reference scope "${reference.scope}" for "${reference.id}". Use "global" or "shot".`);
+    }
+    referenceIds.add(reference.id);
+  }
+
   for (const shot of script.shots) {
     if (!/^[a-z0-9_]+$/.test(shot.id)) {
       throw new Error(`Invalid shot id "${shot.id}". Use lowercase letters, numbers, and underscores.`);
@@ -78,6 +92,12 @@ function validateScript(script: StoryScript, config: PipelineConfig, path: strin
       throw new Error(
         `Shot "${shot.id}" duration ${shot.durationSeconds}s exceeds configured limit ${config.video.maxDurationSeconds}s.`,
       );
+    }
+
+    for (const referenceId of shot.referenceIds ?? []) {
+      if (!referenceIds.has(referenceId)) {
+        throw new Error(`Shot "${shot.id}" references unknown reference id "${referenceId}".`);
+      }
     }
   }
 }

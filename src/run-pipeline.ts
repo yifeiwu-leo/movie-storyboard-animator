@@ -49,8 +49,8 @@ async function main() {
   ensureManifestSteps(manifest, script);
   await saveManifest(manifest, paths.manifestPath, script);
 
-  const referenceIds = await generateReferences(client, config, script, manifest, paths);
-  await generateKeyframes(client, config, script, manifest, paths, referenceIds);
+  const referenceImageIds = await generateReferences(client, config, script, manifest, paths);
+  await generateKeyframes(client, config, script, manifest, paths, referenceImageIds);
   await generateClips(client, config, script, manifest, paths);
 
   if (!options.noAssemble) {
@@ -66,7 +66,7 @@ async function generateReferences(
   script: StoryScript,
   manifest: PipelineManifest,
   paths: ReturnType<typeof getOutputPaths>,
-): Promise<string[]> {
+): Promise<Map<string, string>> {
   const references = script.references ?? [];
   await runWithConcurrency(references, config.image.concurrency, async (reference) => {
     const stepId = referenceStepId(reference.id);
@@ -118,7 +118,11 @@ async function generateReferences(
     }
   });
 
-  return manifest.images.filter((entry) => entry.role === "reference").map((entry) => entry.imageId);
+  return new Map(
+    manifest.images
+      .filter((entry) => entry.role === "reference")
+      .map((entry) => [entry.id, entry.imageId] as const),
+  );
 }
 
 async function generateKeyframes(
@@ -127,7 +131,7 @@ async function generateKeyframes(
   script: StoryScript,
   manifest: PipelineManifest,
   paths: ReturnType<typeof getOutputPaths>,
-  referenceImageIds: string[],
+  referenceImageIds: Map<string, string>,
 ): Promise<void> {
   const work = script.shots.flatMap((shot) => [
     { shot, role: "start" as const, prompt: shot.startKeyframePrompt },
@@ -149,7 +153,7 @@ async function generateKeyframes(
       await saveManifest(manifest, paths.manifestPath, script);
 
       const generation = await client.createImageGeneration(
-        buildImagePayload(config, withGlobalStyle(script, prompt), referenceImageIds),
+        buildImagePayload(config, withGlobalStyle(script, prompt), referenceIdsForShot(script, shot, referenceImageIds)),
       );
       setStepStatus(manifest, stepId, "running", { generationId: generation.generationId });
       await saveManifest(manifest, paths.manifestPath, script);
@@ -301,7 +305,9 @@ function buildVideoPayload(config: PipelineConfig, script: StoryScript, shot: St
 }
 
 async function writeDryRun(config: PipelineConfig, script: StoryScript, path: string): Promise<void> {
-  const placeholderReferenceIds = (script.references ?? []).map((reference) => `${reference.id}-generated-image-id`);
+  const placeholderReferenceIds = new Map(
+    (script.references ?? []).map((reference) => [reference.id, `${reference.id}-generated-image-id`] as const),
+  );
   await writeJson(path, {
     createdAt: new Date().toISOString(),
     imageEndpoint: `${config.baseUrl}/v2/generations`,
@@ -315,12 +321,20 @@ async function writeDryRun(config: PipelineConfig, script: StoryScript, path: st
       {
         shotId: shot.id,
         role: "start",
-        payload: buildImagePayload(config, withGlobalStyle(script, shot.startKeyframePrompt), placeholderReferenceIds),
+        payload: buildImagePayload(
+          config,
+          withGlobalStyle(script, shot.startKeyframePrompt),
+          referenceIdsForShot(script, shot, placeholderReferenceIds),
+        ),
       },
       {
         shotId: shot.id,
         role: "end",
-        payload: buildImagePayload(config, withGlobalStyle(script, shot.endKeyframePrompt), placeholderReferenceIds),
+        payload: buildImagePayload(
+          config,
+          withGlobalStyle(script, shot.endKeyframePrompt),
+          referenceIdsForShot(script, shot, placeholderReferenceIds),
+        ),
       },
     ]),
     videos: script.shots.map((shot) => ({
@@ -554,6 +568,28 @@ function withGlobalStyle(script: StoryScript, prompt: string): string {
   return `${prompt} Style: ${script.style}. Character: ${script.character.description}. Continuity: ${rules}`;
 }
 
+function referenceIdsForShot(script: StoryScript, shot: StoryShot, imageIdsByReferenceId: Map<string, string>): string[] {
+  const ids = new Set<string>();
+
+  for (const reference of script.references ?? []) {
+    if (reference.scope !== "shot") {
+      const imageId = imageIdsByReferenceId.get(reference.id);
+      if (imageId) {
+        ids.add(imageId);
+      }
+    }
+  }
+
+  for (const referenceId of shot.referenceIds ?? []) {
+    const imageId = imageIdsByReferenceId.get(referenceId);
+    if (imageId) {
+      ids.add(imageId);
+    }
+  }
+
+  return [...ids];
+}
+
 function findReference(manifest: PipelineManifest, referenceId: string): PipelineImageEntry | undefined {
   return manifest.images.find((entry) => entry.role === "reference" && entry.id === referenceId);
 }
@@ -625,7 +661,7 @@ function run(command: string, args: string[]): Promise<void> {
 function parseArgs(args: string[]): CliOptions {
   return {
     configPath: readArg(args, "--config") ?? "config/pipeline.json",
-    scriptPath: readArg(args, "--script") ?? "scripts/life-journey.script.json",
+    scriptPath: readArg(args, "--script") ?? "scripts/placeholder.script.json",
     dryRun: args.includes("--dry-run"),
     noAssemble: args.includes("--no-assemble"),
     fresh: args.includes("--fresh"),

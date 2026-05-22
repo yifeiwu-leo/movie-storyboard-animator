@@ -46,6 +46,7 @@ export type StoryScript = {
 
 export type StoryReference = {
   id: string;
+  scope?: "global" | "shot";
   prompt: string;
 };
 
@@ -55,6 +56,7 @@ export type StoryShot = {
   durationSeconds: number;
   caption?: string;
   narration?: string;
+  referenceIds?: string[];
   startKeyframePrompt: string;
   endKeyframePrompt: string;
   videoPrompt: string;

@@ -15,8 +15,8 @@ export type CharacterProfile = {
 
 export type StoryScene = {
   id: string;
-  chapter: string;
-  age: string | number;
+  chapter?: string;
+  age?: string | number;
   location: string;
   caption: string;
   narration: string;
@@ -24,7 +24,7 @@ export type StoryScene = {
   motion: string;
 };
 
-export type LifeJourneyStory = {
+export type StoryboardStory = {
   title: string;
   format: StoryFormat;
   character: CharacterProfile;

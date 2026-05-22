@@ -1,5 +1,5 @@
 import type { AppConfig } from "../config.js";
-import type { LifeJourneyStory, StoryScene } from "../story/types.js";
+import type { StoryboardStory, StoryScene } from "../story/types.js";
 
 export type KeyframeKind = "start" | "end";
 
@@ -22,33 +22,28 @@ export type CharacterReferenceRequest = {
   payload: Record<string, unknown>;
 };
 
-function agePhrase(scene: StoryScene): string {
-  return typeof scene.age === "number" ? `age ${scene.age}` : scene.age;
-}
-
-export function buildImagePrompt(story: LifeJourneyStory, scene: StoryScene, kind: KeyframeKind): string {
+export function buildImagePrompt(story: StoryboardStory, scene: StoryScene, kind: KeyframeKind): string {
   const moment =
     kind === "start"
-      ? "opening keyframe, establishing the life chapter"
+      ? "opening keyframe, establishing the shot"
       : "ending keyframe, a natural continuation that gives the next motion beat somewhere to land";
 
   return [
     `${moment}.`,
-    `${story.character.identity}, ${agePhrase(scene)}, ${story.character.consistency}.`,
+    `${story.character.identity}, ${story.character.consistency}.`,
     `Scene: ${scene.visual}.`,
     `Location: ${scene.location}.`,
     `Mood: ${scene.narration}`,
     `Style: ${story.format.style}.`,
-    "16:9 cinematic composition, warm natural light, polished semi-realistic animation, gentle documentary tone.",
-    "No exact logos, no readable brand marks, no real-person likeness.",
+    "16:9 cinematic composition, clear subject action, coherent lighting, physical props, readable layout.",
+    story.character.avoid,
   ].join(" ");
 }
 
-export function buildKeyframeRequests(story: LifeJourneyStory, config: AppConfig): KeyframeRequest[] {
+export function buildKeyframeRequests(story: StoryboardStory, config: AppConfig): KeyframeRequest[] {
   return story.scenes.flatMap((scene, sceneIndex) =>
     (["start", "end"] as const).map((kind, kindIndex) => {
       const prompt = buildImagePrompt(story, scene, kind);
-      const seed = 844116906 + sceneIndex * 20 + kindIndex;
 
       return {
         sceneId: scene.id,
@@ -61,27 +56,18 @@ export function buildKeyframeRequests(story: LifeJourneyStory, config: AppConfig
 }
 
 export function buildCharacterReferenceRequests(
-  story: LifeJourneyStory,
+  story: StoryboardStory,
   config: AppConfig,
 ): CharacterReferenceRequest[] {
   const prompts = [
     {
       referenceId: "primary_character_reference",
       prompt: [
-        `${story.character.identity}, adult version, ${story.character.consistency}.`,
+        `${story.character.identity}, ${story.character.consistency}.`,
         `Style: ${story.format.style}.`,
-        "Neutral warm background, cinematic animated portrait, clear face, gentle expression, no logos, no real-person likeness.",
+        "Neutral background, cinematic reference portrait, clear face or subject details, consistent materials and outfit.",
+        story.character.avoid,
       ].join(" "),
-      seed: 844116800,
-    },
-    {
-      referenceId: "travel_character_reference",
-      prompt: [
-        `${story.character.identity}, adult traveler version with small suitcase and notebook, ${story.character.consistency}.`,
-        `Style: ${story.format.style}.`,
-        "Three-quarter cinematic animated portrait, warm light, practical travel clothing, no logos, no real-person likeness.",
-      ].join(" "),
-      seed: 844116801,
     },
   ];
 
@@ -131,19 +117,19 @@ function buildNanoBananaPayload(config: AppConfig, prompt: string): Record<strin
   };
 }
 
-export function buildVideoPrompt(story: LifeJourneyStory, scene: StoryScene): string {
+export function buildVideoPrompt(story: StoryboardStory, scene: StoryScene): string {
   return [
     scene.motion,
     "Tween naturally between the provided start and end frames.",
     `Caption beat: ${scene.caption}.`,
     `Narration mood: ${scene.narration}`,
     `Style: ${story.format.style}.`,
-    "Preserve the same fictionalized character identity, outfit continuity, cinematic animation style, lighting, and environment while tweening naturally between the provided start and end frames.",
+    "Preserve subject identity, outfit or material continuity, cinematic style, lighting, and environment while tweening naturally between the provided start and end frames.",
   ].join(" ");
 }
 
 export function buildVideoRequest(
-  story: LifeJourneyStory,
+  story: StoryboardStory,
   scene: StoryScene,
   startFrameId: string,
   endFrameId: string,

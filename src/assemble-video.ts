@@ -14,7 +14,7 @@ async function main() {
   }
 
   const concatPath = "outputs/final/concat.txt";
-  const finalPath = "outputs/final/life-journey.mp4";
+  const finalPath = "outputs/final/storyboard.mp4";
   const captionsPath = "outputs/final/captions.json";
 
   await ensureParentDir(concatPath);
