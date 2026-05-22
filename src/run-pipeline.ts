@@ -133,12 +133,41 @@ async function generateKeyframes(
   paths: ReturnType<typeof getOutputPaths>,
   referenceImageIds: Map<string, string>,
 ): Promise<void> {
-  const work = script.shots.flatMap((shot) => [
-    { shot, role: "start" as const, prompt: shot.startKeyframePrompt },
-    { shot, role: "end" as const, prompt: shot.endKeyframePrompt },
-  ]);
+  await runWithConcurrency(script.shots, config.image.concurrency, async (shot) => {
+    await generateKeyframe(client, config, script, manifest, paths, shot, "start", shot.startKeyframePrompt, [
+      ...referenceIdsForShot(script, shot, referenceImageIds),
+    ]);
 
-  await runWithConcurrency(work, config.image.concurrency, async ({ shot, role, prompt }) => {
+    const startImageId = findImage(manifest, shot.id, "start")?.imageId;
+    const endReferenceImageIds = [
+      ...referenceIdsForShot(script, shot, referenceImageIds),
+      ...(startImageId ? [startImageId] : []),
+    ];
+    await generateKeyframe(
+      client,
+      config,
+      script,
+      manifest,
+      paths,
+      shot,
+      "end",
+      shot.endKeyframePrompt,
+      endReferenceImageIds,
+    );
+  });
+}
+
+async function generateKeyframe(
+  client: LeonardoClient,
+  config: PipelineConfig,
+  script: StoryScript,
+  manifest: PipelineManifest,
+  paths: ReturnType<typeof getOutputPaths>,
+  shot: StoryShot,
+  role: "start" | "end",
+  prompt: string,
+  referenceImageIds: string[],
+): Promise<void> {
     const stepId = keyframeStepId(shot.id, role);
     if (findImage(manifest, shot.id, role)?.imageId) {
       console.log(`Skipping ${shot.id}/${role}; already generated.`);
@@ -153,7 +182,7 @@ async function generateKeyframes(
       await saveManifest(manifest, paths.manifestPath, script);
 
       const generation = await client.createImageGeneration(
-        buildImagePayload(config, withGlobalStyle(script, prompt), referenceIdsForShot(script, shot, referenceImageIds)),
+        buildImagePayload(config, withGlobalStyle(script, prompt), referenceImageIds),
       );
       setStepStatus(manifest, stepId, "running", { generationId: generation.generationId });
       await saveManifest(manifest, paths.manifestPath, script);
@@ -190,7 +219,6 @@ async function generateKeyframes(
       await saveManifest(manifest, paths.manifestPath, script);
       throw error;
     }
-  });
 }
 
 async function generateClips(
@@ -333,7 +361,7 @@ async function writeDryRun(config: PipelineConfig, script: StoryScript, path: st
         payload: buildImagePayload(
           config,
           withGlobalStyle(script, shot.endKeyframePrompt),
-          referenceIdsForShot(script, shot, placeholderReferenceIds),
+          [...referenceIdsForShot(script, shot, placeholderReferenceIds), `${shot.id}-start-generated-image-id`],
         ),
       },
     ]),

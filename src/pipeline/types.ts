@@ -46,6 +46,7 @@ export type StoryScript = {
 
 export type StoryReference = {
   id: string;
+  kind?: "character" | "prop" | "background" | "style";
   scope?: "global" | "shot";
   prompt: string;
 };

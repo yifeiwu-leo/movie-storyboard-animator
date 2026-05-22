@@ -76,6 +76,17 @@ function validateScript(script: StoryScript, config: PipelineConfig, path: strin
     if (reference.scope && reference.scope !== "global" && reference.scope !== "shot") {
       throw new Error(`Invalid reference scope "${reference.scope}" for "${reference.id}". Use "global" or "shot".`);
     }
+    if (
+      reference.kind &&
+      reference.kind !== "character" &&
+      reference.kind !== "prop" &&
+      reference.kind !== "background" &&
+      reference.kind !== "style"
+    ) {
+      throw new Error(
+        `Invalid reference kind "${reference.kind}" for "${reference.id}". Use "character", "prop", "background", or "style".`,
+      );
+    }
     referenceIds.add(reference.id);
   }
 
